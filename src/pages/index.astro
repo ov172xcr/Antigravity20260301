@@ -1,0 +1,445 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { dummyPosts, dummyWorks, formatDate } from '../lib/microcms';
+
+const recentPosts = dummyPosts.slice(0, 3);
+const featuredWorks = dummyWorks.slice(0, 3);
+---
+
+<BaseLayout
+  title="山田太郎 | Webデザイナー・フロントエンドエンジニア"
+  description="Webデザインとフロントエンド開発を専門とするフリーランスエンジニアです。美しく機能的なWebサイトを制作します。"
+>
+  <!-- ─── Hero ──────────────────────────────────────── -->
+  <section class="hero" id="hero" aria-label="ヒーローセクション">
+    <div class="hero-bg"></div>
+    <div class="container hero-content">
+      <div class="hero-label animate-fade-in">
+        <span class="tag">Webデザイナー / フロントエンドエンジニア</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="hero-title-line animate-fade-in-up delay-100">Design</span>
+        <span class="hero-title-line animate-fade-in-up delay-200">meets</span>
+        <span class="hero-title-line hero-title-accent animate-fade-in-up delay-300">Code.</span>
+      </h1>
+      <p class="hero-sub animate-fade-in-up delay-400">
+        ユーザーに寄り添うUI設計と、<br />
+        パフォーマンスを追求したフロントエンド開発。
+      </p>
+      <div class="hero-cta animate-fade-in-up delay-500">
+        <a href="/works" class="btn btn-primary">Works を見る</a>
+        <a href="/contact" class="btn btn-outline">お問い合わせ</a>
+      </div>
+    </div>
+    <div class="hero-scroll animate-fade-in delay-600">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── About ─────────────────────────────────────── -->
+  <section class="section about-section" id="about">
+    <div class="container about-grid">
+      <div class="about-text">
+        <div class="section-eyebrow">About</div>
+        <h2 class="section-title">Webを通じて、<br/>価値を届ける</h2>
+        <p>
+          東京を拠点に活動するWebデザイナー・フロントエンドエンジニアです。
+          ビジュアルデザインからコーディング・CMS構築まで一貫して対応します。
+        </p>
+        <p>
+          Figmaでのデザイン設計からReact・Astroを使った高速なWebサイト実装まで、
+          プロジェクト全体をひとりで担える技術力が強みです。
+        </p>
+        <a href="/profile" class="btn btn-outline" style="margin-top:1.5rem">Profile →</a>
+      </div>
+      <div class="about-skills">
+        {[
+          { icon: '🎨', title: 'UI / UX Design', desc: 'Figmaを使った直感的なUI設計' },
+          { icon: '⚡', title: 'Frontend Dev', desc: 'Astro / React / TypeScript' },
+          { icon: '✏️', title: 'CMS Integration', desc: 'microCMS / WordPress' },
+          { icon: '🚀', title: 'Performance', desc: 'Core Web Vitals 最適化' },
+        ].map(skill => (
+          <div class="skill-card">
+            <span class="skill-icon">{skill.icon}</span>
+            <div>
+              <h3>{skill.title}</h3>
+              <p>{skill.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Works Preview ──────────────────────────────── -->
+  <section class="section works-preview-section" id="works-preview">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Works</div>
+        <h2 class="section-title">制作実績</h2>
+        <a href="/works" class="section-link">すべて見る →</a>
+      </div>
+      <div class="works-grid">
+        {featuredWorks.map((work, i) => (
+          <article class="work-card card">
+            <div class="work-img-wrap">
+              <img
+                src={work.image?.url}
+                alt={work.title}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                width="800"
+                height="600"
+              />
+              <div class="work-overlay">
+                <a href={work.url || '#'} class="work-btn" target="_blank" rel="noopener">
+                  View Project ↗
+                </a>
+              </div>
+            </div>
+            <div class="work-info">
+              <span class="tag">{work.category}</span>
+              <h3>{work.title}</h3>
+              <p>{work.description}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Blog Preview ───────────────────────────────── -->
+  <section class="section blog-preview-section" id="blog-preview">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Blog</div>
+        <h2 class="section-title">最新記事</h2>
+        <a href="/blog" class="section-link">すべて見る →</a>
+      </div>
+      <div class="blog-preview-grid">
+        {recentPosts.map(post => (
+          <a href={`/blog/${post.id}`} class="blog-preview-card card">
+            <div class="blog-preview-img">
+              <img
+                src={post.thumbnail?.url}
+                alt={post.title}
+                loading="lazy"
+                width="800"
+                height="450"
+              />
+              <span class="blog-preview-cat tag">{post.category}</span>
+            </div>
+            <div class="blog-preview-info">
+              <time class="blog-date">{formatDate(post.publishedAt)}</time>
+              <h3>{post.title}</h3>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CTA ───────────────────────────────────────── -->
+  <section class="section cta-section">
+    <div class="container cta-inner">
+      <div class="section-eyebrow">Contact</div>
+      <h2 class="section-title">お仕事のご依頼はこちら</h2>
+      <p>新規サイト制作・既存サイトの改善・UI設計など、お気軽にご相談ください。</p>
+      <a href="/contact" class="btn btn-primary" style="margin-top:2rem">お問い合わせ →</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ─── Hero ─── */
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    background-color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 30%, rgba(255,255,255,0.35) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 10% 80%, rgba(45,55,72,0.08) 0%, transparent 50%);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+  }
+  .hero-label {
+    margin-bottom: 2rem;
+    opacity: 0;
+  }
+  .hero-title {
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    margin: 0 0 2rem;
+  }
+  .hero-title-line {
+    display: block;
+    opacity: 0;
+  }
+  .hero-title-accent {
+    color: var(--color-accent);
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.9;
+    color: rgba(45,55,72,0.85);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    opacity: 0;
+  }
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(45,55,72,0.6);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-family: 'Outfit', sans-serif;
+    opacity: 0;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(45,55,72,0.6), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(1); opacity: 1; }
+    50% { transform: scaleY(0.6); opacity: 0.4; }
+  }
+
+  /* ─── Section Common ─── */
+  .section-eyebrow {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin: 0 0 1.5rem;
+    letter-spacing: -0.02em;
+  }
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  .section-link {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    transition: color 0.2s;
+    white-space: nowrap;
+  }
+  .section-link:hover { color: var(--color-text); }
+
+  /* ─── About ─── */
+  .about-section {
+    background: var(--color-surface-alt);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .about-text p {
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+  }
+  .about-skills {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .skill-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .skill-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  }
+  .skill-icon { font-size: 1.5rem; }
+  .skill-card h3 {
+    font-size: 0.95rem;
+    margin: 0 0 0.3rem;
+    font-family: 'Outfit', sans-serif;
+  }
+  .skill-card p {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* ─── Works Preview ─── */
+  .works-preview-section { background: white; }
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .work-img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+  }
+  .work-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .work-card:hover .work-img-wrap img {
+    transform: scale(1.05);
+  }
+  .work-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(45,55,72,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .work-card:hover .work-overlay { opacity: 1; }
+  .work-btn {
+    background: white;
+    color: var(--color-accent);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.875rem;
+  }
+  .work-info {
+    padding: 1.5rem;
+  }
+  .work-info h3 {
+    font-size: 1.05rem;
+    margin: 0.75rem 0 0.5rem;
+    font-family: 'Outfit', sans-serif;
+  }
+  .work-info p {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* ─── Blog Preview ─── */
+  .blog-preview-section { background: var(--color-surface-alt); }
+  .blog-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .blog-preview-card {
+    display: block;
+  }
+  .blog-preview-img {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+  }
+  .blog-preview-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .blog-preview-card:hover .blog-preview-img img {
+    transform: scale(1.04);
+  }
+  .blog-preview-cat {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 0.75rem;
+  }
+  .blog-preview-info {
+    padding: 1.25rem;
+  }
+  .blog-date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .blog-preview-info h3 {
+    font-size: 0.95rem;
+    margin: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  /* ─── CTA ─── */
+  .cta-section {
+    background: var(--color-primary);
+    text-align: center;
+  }
+  .cta-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .cta-inner .section-title {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+  }
+  .cta-inner p {
+    color: rgba(45,55,72,0.75);
+    font-size: 1.05rem;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 1024px) {
+    .about-grid { gap: 3rem; }
+    .works-grid { grid-template-columns: repeat(2, 1fr); }
+    .blog-preview-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .about-skills { grid-template-columns: 1fr 1fr; }
+    .works-grid { grid-template-columns: 1fr; }
+    .blog-preview-grid { grid-template-columns: 1fr; }
+    .hero-cta { flex-direction: column; align-items: flex-start; }
+  }
+</style>

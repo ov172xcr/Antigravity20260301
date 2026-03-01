@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { dummyWorks, formatDate } from '../../lib/microcms';
+
+const works = dummyWorks;
+const categories = ['All', ...Array.from(new Set(works.map(w => w.category)))];
+---
+
+<BaseLayout
+  title="Works | 山田太郎"
+  description="Webデザイン・フロントエンド開発の制作実績をご覧いただけます。"
+>
+  <div class="page-hero" style="padding-top: 10rem;">
+    <div class="container">
+      <div class="section-eyebrow">Works</div>
+      <h1 class="page-title">制作実績</h1>
+      <p class="page-desc">これまでに手がけたWebサイト・アプリのUIデザイン・開発実績です。</p>
+    </div>
+  </div>
+
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      <!-- Filter buttons -->
+      <div class="filter-bar" role="group" aria-label="カテゴリフィルター">
+        {categories.map(cat => (
+          <button class="filter-btn" data-category={cat} aria-pressed={cat === 'All' ? 'true' : 'false'}>
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <div class="works-grid" id="works-grid">
+        {works.map(work => (
+          <article class="work-card card" data-category={work.category}>
+            <div class="work-img-wrap">
+              <img
+                src={work.image?.url}
+                alt={work.title}
+                loading="lazy"
+                width="800"
+                height="600"
+              />
+              <div class="work-overlay">
+                <a href={work.url || '#'} class="work-btn" target="_blank" rel="noopener">
+                  View Project ↗
+                </a>
+              </div>
+            </div>
+            <div class="work-info">
+              <div class="work-meta">
+                <span class="tag">{work.category}</span>
+                <time class="work-date">{formatDate(work.date)}</time>
+              </div>
+              <h2>{work.title}</h2>
+              <p>{work.description}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" style="background: var(--color-primary); text-align:center;">
+    <div class="container" style="max-width:600px;">
+      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem); margin-bottom:1rem;">制作のご依頼はお気軽に</h2>
+      <p style="color:rgba(45,55,72,0.75); margin-bottom:2rem;">新規サイト制作から既存サイトの改善まで、ご相談ください。</p>
+      <a href="/contact" class="btn btn-primary">お問い合わせ →</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.work-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.category;
+
+      filterBtns.forEach(b => {
+        b.setAttribute('aria-pressed', 'false');
+        b.classList.remove('active');
+      });
+      btn.setAttribute('aria-pressed', 'true');
+      btn.classList.add('active');
+
+      cards.forEach(card => {
+        if (cat === 'All' || card.dataset.category === cat) {
+          card.style.display = '';
+          card.classList.add('animate-scale-in');
+        } else {
+          card.style.display = 'none';
+          card.classList.remove('animate-scale-in');
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .page-hero { background: var(--color-surface-alt); padding-bottom: 3rem; }
+  .page-title { font-size: clamp(2.5rem, 6vw, 5rem); letter-spacing: -0.03em; margin: 0.5rem 0 1rem; }
+  .page-desc { font-size: 1.1rem; color: var(--color-text-muted); max-width: 50ch; }
+  .section-eyebrow {
+    font-family: 'Outfit', sans-serif; font-size: 0.75rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600; color: var(--color-primary-dark); margin-bottom: 0.75rem;
+  }
+
+  /* Filter */
+  .filter-bar {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 3rem;
+  }
+  .filter-btn {
+    padding: 0.5rem 1.25rem; border-radius: 50px;
+    border: 2px solid #e2e8f0; background: white;
+    font-family: 'Outfit', sans-serif; font-size: 0.875rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s ease; color: var(--color-text-muted);
+  }
+  .filter-btn:hover, .filter-btn.active, .filter-btn[aria-pressed="true"] {
+    background: var(--color-accent); border-color: var(--color-accent); color: white;
+  }
+
+  /* Works Grid */
+  .works-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem;
+  }
+  .work-img-wrap {
+    position: relative; overflow: hidden; aspect-ratio: 4/3;
+  }
+  .work-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease;
+  }
+  .work-card:hover .work-img-wrap img { transform: scale(1.05); }
+  .work-overlay {
+    position: absolute; inset: 0; background: rgba(45,55,72,0.75);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .work-card:hover .work-overlay { opacity: 1; }
+  .work-btn {
+    background: white; color: var(--color-accent);
+    padding: 0.75rem 1.5rem; border-radius: 50px;
+    font-weight: 700; font-family: 'Outfit', sans-serif; font-size: 0.875rem;
+  }
+  .work-info { padding: 1.5rem; }
+  .work-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+  .work-date { font-size: 0.75rem; color: var(--color-text-muted); }
+  .work-info h2 { font-size: 1.1rem; margin: 0.25rem 0 0.5rem; font-family: 'Outfit', sans-serif; }
+  .work-info p { font-size: 0.875rem; color: var(--color-text-muted); margin: 0; }
+
+  @media (max-width: 1024px) { .works-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .works-grid { grid-template-columns: 1fr; } }
+</style>

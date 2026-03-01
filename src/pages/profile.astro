@@ -1,0 +1,250 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Profile | 山田太郎"
+  description="Webデザイナー・フロントエンドエンジニアとして活動する山田太郎のプロフィールです。"
+>
+  <div class="profile-hero">
+    <div class="container profile-hero-inner">
+      <div class="profile-img-wrap">
+        <img
+          src="https://picsum.photos/seed/profile/600/600"
+          alt="山田太郎のプロフィール写真"
+          width="600"
+          height="600"
+          class="profile-img"
+        />
+        <div class="profile-img-deco"></div>
+      </div>
+      <div class="profile-intro">
+        <div class="section-eyebrow">Profile</div>
+        <h1 class="profile-name">山田 太郎</h1>
+        <p class="profile-role">Webデザイナー / フロントエンドエンジニア</p>
+        <p class="profile-bio">
+          東京都出身。グラフィックデザインを学んだ後、Web業界へ転向。
+          現在はフリーランスとして、コーポレートサイトからECサイト・Webアプリまで幅広く手がけています。
+          「見た目の美しさ」と「使いやすさ」を両立したWebを追求しています。
+        </p>
+        <div class="profile-tags">
+          {['Figma', 'Astro', 'React', 'TypeScript', 'Tailwind CSS', 'microCMS', 'Netlify'].map(t => (
+            <span class="tag">{t}</span>
+          ))}
+        </div>
+        <div class="profile-links">
+          <a href="https://github.com" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
+          <a href="/contact" class="btn btn-primary">お問い合わせ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-sections">
+
+        <!-- Skills -->
+        <div class="profile-block">
+          <h2 class="profile-block-title">Skills</h2>
+          <div class="skills-list">
+            {[
+              { name: 'UI / UX Design', level: 90 },
+              { name: 'Figma', level: 95 },
+              { name: 'HTML / CSS', level: 98 },
+              { name: 'JavaScript / TypeScript', level: 85 },
+              { name: 'React / Astro', level: 80 },
+              { name: 'Node.js / API連携', level: 70 },
+            ].map(skill => (
+              <div class="skill-item">
+                <div class="skill-header">
+                  <span class="skill-name">{skill.name}</span>
+                  <span class="skill-pct">{skill.level}%</span>
+                </div>
+                <div class="skill-bar-bg">
+                  <div class="skill-bar-fill" style={`width: ${skill.level}%`}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Career -->
+        <div class="profile-block">
+          <h2 class="profile-block-title">Career</h2>
+          <div class="timeline">
+            {[
+              { year: '2025', title: 'フリーランス独立', desc: 'Webデザイン・フロントエンド開発のフリーランスとして独立。' },
+              { year: '2022', title: '株式会社XYZ', desc: 'フロントエンドエンジニアとして大手ECサイトのUI改善を担当。' },
+              { year: '2020', title: 'デザイン事務所ABC', desc: 'Webデザイナーとしてコーポレートサイト・LPの制作に従事。' },
+              { year: '2018', title: '○○大学 芸術学部 卒業', desc: 'グラフィックデザインを専攻。卒業制作でデザイン賞を受賞。' },
+            ].map((item, i) => (
+              <div class="timeline-item">
+                <div class="timeline-year">{item.year}</div>
+                <div class="timeline-content">
+                  <h3>{item.title}</h3>
+                  <p>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .profile-hero {
+    background: var(--color-surface-alt);
+    padding: 10rem 0 5rem;
+  }
+  .profile-hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .profile-img-wrap {
+    position: relative;
+  }
+  .profile-img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .profile-img-deco {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    right: -1.5rem;
+    bottom: -1.5rem;
+    border-radius: 24px;
+    background: var(--color-primary);
+    z-index: 0;
+  }
+  .section-eyebrow {
+    font-family: 'Outfit', sans-serif; font-size: 0.75rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600; color: var(--color-primary-dark); margin-bottom: 0.75rem;
+  }
+  .profile-name {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: -0.03em;
+    margin: 0.5rem 0 0.5rem;
+  }
+  .profile-role {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    margin: 0 0 1.5rem;
+    font-weight: 500;
+  }
+  .profile-bio {
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+    max-width: 52ch;
+  }
+  .profile-tags {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;
+  }
+  .profile-links {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+
+  /* Skills */
+  .profile-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+  }
+  .profile-block-title {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-primary);
+    font-family: 'Outfit', sans-serif;
+  }
+  .skills-list { display: flex; flex-direction: column; gap: 1.25rem; }
+  .skill-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+  .skill-name { font-size: 0.9rem; font-weight: 500; }
+  .skill-pct { font-size: 0.8rem; color: var(--color-text-muted); font-family: 'Outfit', sans-serif; }
+  .skill-bar-bg {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--color-primary-dark), var(--color-accent));
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1.5rem;
+    position: relative;
+    padding-bottom: 2rem;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 79px;
+    top: 8px;
+    bottom: 0;
+    width: 2px;
+    background: #e2e8f0;
+  }
+  .timeline-item:last-child::before { display: none; }
+  .timeline-year {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    padding-top: 0.25rem;
+    text-align: right;
+  }
+  .timeline-content {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    position: relative;
+  }
+  .timeline-content::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 12px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px var(--color-primary-dark);
+  }
+  .timeline-content h3 { font-size: 1rem; margin: 0 0 0.4rem; }
+  .timeline-content p { font-size: 0.875rem; color: var(--color-text-muted); margin: 0; }
+
+  @media (max-width: 1024px) {
+    .profile-hero-inner { gap: 3rem; }
+    .profile-sections { gap: 3rem; }
+  }
+  @media (max-width: 768px) {
+    .profile-hero-inner { grid-template-columns: 1fr; }
+    .profile-img-wrap { max-width: 300px; margin: 0 auto; }
+    .profile-sections { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getBlogPosts, formatDate } from '../../lib/microcms';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  // totalPages を取得（ダミーデータは7件なので2ページ）
+  const { totalPages } = await getBlogPosts(1);
+  return Array.from({ length: totalPages }, (_, i) => ({
+    params: { page: String(i + 1) },
+  }));
+};
+
+const { page } = Astro.params;
+const currentPage = Number(page);
+const { posts, totalPages } = await getBlogPosts(currentPage);
+---
+
+<BaseLayout
+  title={`Blog - ${currentPage}ページ目 | 山田太郎`}
+  description="Webデザイン・フロントエンド開発に関する記事を発信しています。"
+>
+  <div class="page-hero">
+    <div class="container">
+      <div class="section-eyebrow">Blog</div>
+      <h1 class="page-title">Blog</h1>
+      <p class="page-desc">デザインと開発の現場から、気づきや技術情報を発信します。</p>
+    </div>
+  </div>
+
+  <section class="section" style="padding-top:3rem;">
+    <div class="container">
+      <div class="blog-grid">
+        {posts.map(post => (
+          <a href={`/blog/${post.id}`} class="blog-card card">
+            <div class="blog-card-img">
+              <img src={post.thumbnail?.url} alt={post.title} loading="lazy" width="800" height="450" />
+              <span class="blog-card-cat tag">{post.category}</span>
+            </div>
+            <div class="blog-card-body">
+              <time class="blog-date">{formatDate(post.publishedAt)}</time>
+              <h2 class="blog-card-title">{post.title}</h2>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <nav class="pagination" aria-label="ページナビゲーション">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+          <a
+            href={p === 1 ? '/blog' : `/blog/${p}`}
+            class={`page-btn ${p === currentPage ? 'active' : ''}`}
+            aria-current={p === currentPage ? 'page' : undefined}
+          >{p}</a>
+        ))}
+      </nav>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero { background: var(--color-surface-alt); padding: 10rem 0 3rem; }
+  .page-title { font-size: clamp(2.5rem, 6vw, 5rem); letter-spacing: -0.03em; margin: 0.5rem 0 1rem; }
+  .page-desc { font-size: 1.1rem; color: var(--color-text-muted); max-width: 50ch; }
+  .section-eyebrow {
+    font-family: 'Outfit', sans-serif; font-size: 0.75rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600; color: var(--color-primary-dark); margin-bottom: 0.75rem;
+  }
+  .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+  .blog-card { display: block; }
+  .blog-card-img { position: relative; overflow: hidden; aspect-ratio: 16/9; }
+  .blog-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+  .blog-card:hover .blog-card-img img { transform: scale(1.04); }
+  .blog-card-cat { position: absolute; bottom: 0.75rem; left: 0.75rem; }
+  .blog-card-body { padding: 1.25rem; }
+  .blog-date { display: block; font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 0.5rem; }
+  .blog-card-title { font-size: 1rem; margin: 0; font-family: 'Noto Sans JP', sans-serif; font-weight: 500; line-height: 1.65; }
+  .pagination { display: flex; justify-content: center; gap: 0.5rem; margin-top: 4rem; }
+  .page-btn { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid #e2e8f0; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.9rem; color: var(--color-text-muted); transition: all 0.2s; }
+  .page-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .page-btn.active { background: var(--color-accent); border-color: var(--color-accent); color: white; }
+  @media (max-width: 1024px) { .blog-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .blog-grid { grid-template-columns: 1fr; } }
+</style>

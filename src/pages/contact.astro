@@ -1,0 +1,265 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Contact | 山田太郎"
+  description="Webデザイン・フロントエンド開発のご相談・お見積もりはこちらからお気軽にどうぞ。"
+>
+  <div class="contact-hero">
+    <div class="container">
+      <div class="section-eyebrow">Contact</div>
+      <h1 class="page-title">お問い合わせ</h1>
+      <p class="page-desc">制作のご依頼やご相談は、以下のフォームよりお気軽にお送りください。<br />通常2〜3営業日以内にご返答いたします。</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container contact-layout">
+
+      <!-- Info -->
+      <div class="contact-info">
+        <h2 class="info-title">まずはご相談ください</h2>
+        <div class="info-cards">
+          {[
+            { icon: '💬', title: '新規サイト制作', desc: 'コーポレートサイト・LPの企画〜公開まで一貫して対応します。' },
+            { icon: '🔧', title: '既存サイト改善', desc: 'デザインリニューアルやパフォーマンス改善のご相談も歓迎です。' },
+            { icon: '🎨', title: 'UI/UXデザイン', desc: 'Figmaを使ったUI設計・プロトタイプ作成も承ります。' },
+          ].map(item => (
+            <div class="info-card">
+              <span class="info-icon">{item.icon}</span>
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Form (Netlify Forms) -->
+      <div class="contact-form-wrap">
+        <form
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          class="contact-form"
+          id="contact-form"
+          novalidate
+        >
+          <input type="hidden" name="form-name" value="contact" />
+          <p class="visually-hidden">
+            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+          </p>
+
+          <div class="form-group">
+            <label for="name">お名前 <span class="required">*</span></label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="山田 太郎"
+              required
+              autocomplete="name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">メールアドレス <span class="required">*</span></label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="example@email.com"
+              required
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="subject">件名 <span class="required">*</span></label>
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              placeholder="Webサイト制作のご相談"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="budget">ご予算（任意）</label>
+            <select id="budget" name="budget">
+              <option value="">選択してください</option>
+              <option value="〜30万円">〜30万円</option>
+              <option value="30〜50万円">30〜50万円</option>
+              <option value="50〜100万円">50〜100万円</option>
+              <option value="100万円〜">100万円〜</option>
+              <option value="未定">未定・ご相談</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">お問い合わせ内容 <span class="required">*</span></label>
+            <textarea
+              id="message"
+              name="message"
+              rows="6"
+              placeholder="ご依頼の詳細やご要望をご記入ください。"
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary submit-btn" id="submit-btn">
+            <span class="btn-text">送信する</span>
+            <span class="btn-loading" hidden>送信中...</span>
+          </button>
+
+          <!-- Success / Error messages -->
+          <div class="form-feedback success" id="form-success" hidden>
+            <span>✅</span>
+            <p>メッセージを送信しました！2〜3営業日以内にご返答いたします。</p>
+          </div>
+          <div class="form-feedback error" id="form-error" hidden>
+            <span>⚠️</span>
+            <p>送信に失敗しました。時間をおいて再度お試しください。</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const btnText = submitBtn?.querySelector('.btn-text');
+  const btnLoading = submitBtn?.querySelector('.btn-loading');
+  const successMsg = document.getElementById('form-success');
+  const errorMsg = document.getElementById('form-error');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Client-side validation
+    const requiredFields = form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]');
+    let valid = true;
+    requiredFields.forEach(field => {
+      field.classList.remove('invalid');
+      if (!field.value.trim()) {
+        field.classList.add('invalid');
+        valid = false;
+      }
+    });
+    if (!valid) return;
+
+    // Submit state
+    submitBtn.disabled = true;
+    btnText?.setAttribute('hidden', '');
+    btnLoading?.removeAttribute('hidden');
+    successMsg?.setAttribute('hidden', '');
+    errorMsg?.setAttribute('hidden', '');
+
+    try {
+      const formData = new FormData(form);
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData as any).toString(),
+      });
+
+      if (response.ok) {
+        form.reset();
+        successMsg?.removeAttribute('hidden');
+      } else {
+        throw new Error('Network error');
+      }
+    } catch {
+      errorMsg?.removeAttribute('hidden');
+    } finally {
+      submitBtn.disabled = false;
+      btnText?.removeAttribute('hidden');
+      btnLoading?.setAttribute('hidden', '');
+    }
+  });
+</script>
+
+<style>
+  .contact-hero {
+    background: var(--color-surface-alt);
+    padding: 10rem 0 3rem;
+  }
+  .page-title { font-size: clamp(2.5rem, 6vw, 5rem); letter-spacing: -0.03em; margin: 0.5rem 0 1rem; }
+  .page-desc { font-size: 1.05rem; color: var(--color-text-muted); line-height: 1.9; }
+  .section-eyebrow {
+    font-family: 'Outfit', sans-serif; font-size: 0.75rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600; color: var(--color-primary-dark); margin-bottom: 0.75rem;
+  }
+
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  /* Info */
+  .info-title { font-size: 1.5rem; margin-bottom: 2rem; font-family: 'Outfit', sans-serif; }
+  .info-cards { display: flex; flex-direction: column; gap: 1.25rem; }
+  .info-card {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: var(--color-surface-alt); border-radius: 16px;
+    padding: 1.25rem;
+  }
+  .info-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .info-card h3 { font-size: 0.95rem; margin: 0 0 0.3rem; }
+  .info-card p { font-size: 0.85rem; color: var(--color-text-muted); margin: 0; }
+
+  /* Form */
+  .contact-form { display: flex; flex-direction: column; gap: 1.5rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .form-group label {
+    font-size: 0.875rem; font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+  }
+  .required { color: #e53e3e; }
+  .form-group input, .form-group textarea, .form-group select {
+    padding: 0.85rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    outline: none;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--color-primary-dark);
+    box-shadow: 0 0 0 3px rgba(162, 215, 221, 0.3);
+  }
+  .form-group input.invalid, .form-group textarea.invalid {
+    border-color: #e53e3e;
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.15);
+  }
+  .form-group textarea { resize: vertical; min-height: 140px; }
+  .submit-btn { align-self: flex-start; padding: 1rem 2.5rem; }
+
+  /* Feedback */
+  .form-feedback {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 1.25rem; border-radius: 12px;
+  }
+  .form-feedback.success { background: #f0fff4; border: 1.5px solid #68d391; }
+  .form-feedback.error { background: #fff5f5; border: 1.5px solid #fc8181; }
+  .form-feedback p { margin: 0; font-size: 0.9rem; }
+  .form-feedback[hidden] { display: none; }
+
+  .visually-hidden { position: absolute; opacity: 0; pointer-events: none; }
+
+  @media (max-width: 1024px) { .contact-layout { gap: 3rem; } }
+  @media (max-width: 768px) { .contact-layout { grid-template-columns: 1fr; } }
+</style>

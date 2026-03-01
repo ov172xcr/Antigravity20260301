@@ -1,0 +1,292 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = '山田太郎 | Webデザイナー・フロントエンドエンジニア',
+  description = 'Webデザインとフロントエンド開発を専門とするフリーランスエンジニアのポートフォリオサイトです。',
+  image = '/og-image.png',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://example.com');
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- OGP -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <header id="site-header">
+      <div class="header-inner container">
+        <a href="/" class="logo" aria-label="ホームへ戻る">
+          <span class="logo-text">YAMADA</span>
+          <span class="logo-dot">.</span>
+        </a>
+        <button
+          class="menu-btn"
+          id="menu-btn"
+          aria-label="メニューを開く"
+          aria-expanded="false"
+          aria-controls="nav-overlay"
+        >
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Full-screen nav overlay (East Co. style) -->
+    <nav class="nav-overlay" id="nav-overlay" role="navigation" aria-label="メインナビゲーション">
+      <button class="nav-close" id="nav-close" aria-label="メニューを閉じる">×</button>
+      <ul class="nav-items">
+        {[
+          { href: '/', label: 'Home' },
+          { href: '/works', label: 'Works' },
+          { href: '/profile', label: 'Profile' },
+          { href: '/blog', label: 'Blog' },
+          { href: '/contact', label: 'Contact' },
+        ].map((item, i) => (
+          <li class="nav-item" style={`transition-delay: ${i * 80}ms`}>
+            <a href={item.href} class="nav-link">{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <span class="logo-text">YAMADA<span class="logo-dot">.</span></span>
+            <p>Webデザイナー・フロントエンドエンジニア</p>
+          </div>
+          <nav class="footer-nav" aria-label="フッターナビゲーション">
+            <a href="/works">Works</a>
+            <a href="/profile">Profile</a>
+            <a href="/blog">Blog</a>
+            <a href="/contact">Contact</a>
+          </nav>
+          <div class="footer-social">
+            <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter/X">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; {new Date().getFullYear()} 山田太郎. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const menuBtn = document.getElementById('menu-btn');
+      const navClose = document.getElementById('nav-close');
+      const navOverlay = document.getElementById('nav-overlay');
+      const header = document.getElementById('site-header');
+
+      function openMenu() {
+        navOverlay?.classList.add('is-open');
+        menuBtn?.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMenu() {
+        navOverlay?.classList.remove('is-open');
+        menuBtn?.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      menuBtn?.addEventListener('click', openMenu);
+      navClose?.addEventListener('click', closeMenu);
+
+      // Close on nav link click
+      navOverlay?.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+      });
+
+      // Header scroll effect
+      let lastScroll = 0;
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.scrollY;
+        if (currentScroll > 80) {
+          header?.classList.add('scrolled');
+        } else {
+          header?.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      });
+    </script>
+
+    <style>
+      /* ─── Header ─── */
+      #site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        padding: 1.5rem 0;
+        transition: background 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+      }
+      #site-header.scrolled {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(12px);
+        padding: 1rem 0;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+      }
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        color: var(--color-accent);
+        transition: opacity 0.2s;
+      }
+      .logo:hover { opacity: 0.7; }
+      .logo-text { color: var(--color-accent); }
+      .logo-dot { color: var(--color-primary-dark); }
+
+      /* ─── Menu Button ─── */
+      .menu-btn {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        z-index: 200;
+      }
+      .menu-bar {
+        display: block;
+        width: 28px;
+        height: 2px;
+        background: var(--color-accent);
+        transition: all 0.3s ease;
+        border-radius: 2px;
+      }
+
+      /* ─── Nav Close Button ─── */
+      .nav-close {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 2.5rem;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0.5rem;
+        transition: opacity 0.2s, transform 0.2s;
+        font-family: 'Outfit', sans-serif;
+      }
+      .nav-close:hover {
+        opacity: 0.7;
+        transform: rotate(90deg);
+      }
+
+      /* ─── Footer ─── */
+      .site-footer {
+        background: var(--color-accent);
+        color: white;
+        padding: 4rem 0 2rem;
+      }
+      .footer-inner {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        align-items: start;
+        gap: 3rem;
+        padding-bottom: 3rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 2rem;
+      }
+      .footer-brand .logo-text {
+        color: white;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 900;
+      }
+      .footer-brand p {
+        color: rgba(255,255,255,0.6);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+      }
+      .footer-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .footer-nav a {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+      .footer-nav a:hover { color: var(--color-primary); }
+      .footer-social {
+        display: flex;
+        gap: 1rem;
+      }
+      .footer-social a {
+        color: rgba(255,255,255,0.7);
+        transition: color 0.2s;
+      }
+      .footer-social a:hover { color: var(--color-primary); }
+      .footer-bottom {
+        text-align: center;
+        color: rgba(255,255,255,0.4);
+        font-size: 0.8rem;
+      }
+
+      @media (max-width: 768px) {
+        .footer-inner {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+        .footer-social { flex-direction: row; }
+      }
+    </style>
+  </body>
+</html>
